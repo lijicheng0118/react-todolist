@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {Component, Fragment} from 'react';
+import TodoItem from './TodoItem'
 
-class TodoList extends React.Component {
+class TodoList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			list: [],
 			initValue: ''
 		}
+		this.handleInputChange = this.handleInputChange.bind(this)
+		this.handleBtnClick = this.handleBtnClick.bind(this)
+		this.handleDelete = this.handleDelete.bind(this)
 	}
 
 	handleBtnClick() {
@@ -20,26 +24,34 @@ class TodoList extends React.Component {
 			initValue: e.target.value
 		})
 	}
-	handleItemClick(index) {
+	handleDelete(index) {
 		const list = this.state.list
 		list.splice(index, 1)
 		this.setState({list})
 	}
+	getTodoItems() {
+		return (
+			this.state.list.map((item, index) => {
+				return (
+					<TodoItem 
+					    delete={this.handleDelete} 
+					    content={item} 
+					    index={index} 
+					    key={index}
+					/>
+				)
+			})
+		)
+	}
     render() {
 	  	return (
-		    <div>
+		    <Fragment>
 		    	<div>
-		    		<input value={this.state.initValue} onChange={this.handleInputChange.bind(this)} />
-		    		<button onClick={this.handleBtnClick.bind(this)}>add</button>
+		    		<input value={this.state.initValue} onChange={this.handleInputChange} />
+		    		<button onClick={this.handleBtnClick}>add</button>
 		    	</div>
-		    	<ul>
-		    		{
-		    			this.state.list.map((item, index) => {
-		    				return <li key={index} onClick={this.handleItemClick.bind(this, index)}>{item}</li>
-		    		    })
-		    		}
-		    	</ul>
-		    </div>
+		    	<ul> {this.getTodoItems()} </ul>
+		    </Fragment>
 	  	);
     }
 }
